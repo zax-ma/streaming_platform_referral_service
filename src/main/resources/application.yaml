@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: platform
+
+referral:
+  fixed:
+    bonuses:
+      MONTHLY: 7
+      ANNUAL: 30
+  progressive:
+    base: 5
+    coefficients: [1.0, 1.2, 1.5]
