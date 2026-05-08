@@ -4,10 +4,7 @@ import com.stream.platform.model.enums.SubscriptionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -17,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder(toBuilder = true)
 public class ReferralEvent {
     UUID id;
     UUID refereeId;

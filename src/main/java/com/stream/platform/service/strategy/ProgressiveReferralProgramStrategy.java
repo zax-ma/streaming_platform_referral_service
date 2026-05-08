@@ -1,11 +1,13 @@
 package com.stream.platform.service.strategy;
 
 import com.stream.platform.configuration.ProgressiveReferralProgramConfig;
+import com.stream.platform.model.ProcessedReferralEvents;
 import com.stream.platform.model.ReferralEvent;
 import com.stream.platform.service.strategy.enums.ReferralProgramType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -15,9 +17,10 @@ public class ProgressiveReferralProgramStrategy implements ReferralProgramStrate
     private final ProgressiveReferralProgramConfig config;
 
     @Override
-    public long calculate(List<ReferralEvent> events) {
+    public ProcessedReferralEvents calculate(List<ReferralEvent> events) {
         long totalBonusDays = 0L;
         long baseDays = config.getBase();
+        List<ReferralEvent> resultEvents = new ArrayList<>();
         List<Double> coefficients = config.getCoefficients();
 
         for (int i = 0; i < events.size(); i++) {
@@ -25,11 +28,13 @@ public class ProgressiveReferralProgramStrategy implements ReferralProgramStrate
                     ? coefficients.get(i)
                     : coefficients.getLast();
             long bonusDays = (long) (baseDays * factor);
-
-            events.get(i).setBonusDays(bonusDays);
+            ReferralEvent copy = events.get(i).toBuilder()
+                    .bonusDays(bonusDays)
+                    .build();
+            resultEvents.add(copy);
             totalBonusDays += bonusDays;
         }
-        return totalBonusDays;
+        return new ProcessedReferralEvents(resultEvents, totalBonusDays);
     }
 
     @Override

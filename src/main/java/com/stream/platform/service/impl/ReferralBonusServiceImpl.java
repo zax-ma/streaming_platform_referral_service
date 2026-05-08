@@ -31,19 +31,20 @@ public class ReferralBonusServiceImpl implements ReferralBonusService {
     }
 
     @Override
-    public List<ProcessedReferralEvents> applyBonuses(UUID referrerId, List<ReferralEvent> events) {
+    public ProcessedReferralEvents applyBonuses(UUID referrerId, List<ReferralEvent> events) {
         if(referrerId == null){
             throw new IllegalArgumentException("referrerId is required");
         }
-        if(events == null || events.isEmpty()) return Collections.emptyList();
+        if(events == null || events.isEmpty()){
+            return new ProcessedReferralEvents(events, 0L);
+        };
         ReferralProgramType referrerProgramType = userReferralService.getReferralTypeByUserId(referrerId); // TODO заменить на JPA с запросом by referrerId
         if (referrerProgramType == null){
             throw new ProgramTypeNotFoundException("Referrer program for " + referrerId + " not found");
         }
         ReferralProgramStrategy referralProgram = referralProgramFactory.getReferralStrategy(referrerProgramType);
         try {
-            long totalDays = referralProgram.calculate(events);
-            return Collections.singletonList(new ProcessedReferralEvents(events, totalDays));
+            return referralProgram.calculate(events);
         } catch (RuntimeException e){
             throw new CalculateReferralProgramException("Ошибка в методе расчета бонусных дней: " + e.getMessage());
         }

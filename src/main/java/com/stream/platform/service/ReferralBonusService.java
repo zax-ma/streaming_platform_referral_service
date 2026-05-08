@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ReferralBonusService {
-    List<ProcessedReferralEvents> applyBonuses(UUID referrerId, List<ReferralEvent> events);
+    ProcessedReferralEvents applyBonuses(UUID referrerId, List<ReferralEvent> events);
 }

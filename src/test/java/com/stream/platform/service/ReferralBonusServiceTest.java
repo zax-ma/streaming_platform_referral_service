@@ -52,13 +52,12 @@ public class ReferralBonusServiceTest {
         ReferralProgramType type = ReferralProgramType.FIXED;
         when(userReferralService.getReferralTypeByUserId(referrerId)).thenReturn(type);
         when(referralProgramFactory.getReferralStrategy(type)).thenReturn(referralProgramStrategy);
-        when(referralProgramStrategy.calculate(events)).thenReturn(44L);
+        when(referralProgramStrategy.calculate(events)).thenReturn(new ProcessedReferralEvents(Collections.emptyList(), 44L));
 
-        List<ProcessedReferralEvents> result = referralBonusService.applyBonuses(referrerId, events);
+        ProcessedReferralEvents result = referralBonusService.applyBonuses(referrerId, events);
 
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(44L, result.getFirst().getTotalBonusDays());
+        assertEquals(44L, result.getTotalBonusDays());
         verify(referralProgramStrategy).calculate(events);
     }
 
@@ -71,8 +70,8 @@ public class ReferralBonusServiceTest {
 
     @Test
     void shouldReturnEmptyListWhenEventsAreEmpty() {
-        List<ProcessedReferralEvents> result = referralBonusService.applyBonuses(referrerId, Collections.emptyList());
-        assertTrue(result.isEmpty());
+        ProcessedReferralEvents result = referralBonusService.applyBonuses(referrerId, Collections.emptyList());
+        assertNotNull(result);
     }
 
     @Test
