@@ -1,6 +1,5 @@
 package com.stream.platform.service.impl;
 
-import com.stream.platform.event.ReferralEventReceivedEvents;
 import com.stream.platform.exception.CalculateReferralProgramException;
 import com.stream.platform.exception.ProgramTypeNotFoundException;
 import com.stream.platform.model.ProcessedReferralEvents;
@@ -11,10 +10,8 @@ import com.stream.platform.service.UserReferralService;
 import com.stream.platform.service.strategy.ReferralProgramStrategy;
 import com.stream.platform.service.strategy.enums.ReferralProgramType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,11 +21,6 @@ public class ReferralBonusServiceImpl implements ReferralBonusService {
 
     private final ReferralProgramFactory referralProgramFactory;
     private final UserReferralService userReferralService;
-
-    @EventListener
-    public void onReferralEvents(ReferralEventReceivedEvents event){
-        applyBonuses(event.referrerId(), event.events());
-    }
 
     @Override
     public ProcessedReferralEvents applyBonuses(UUID referrerId, List<ReferralEvent> events) {
